@@ -1,0 +1,55 @@
+#!/usr/bin/python 
+"""Sorts alphabetically all the files within an nzb file.
+
+If no file is provided, read stdin. Either way, spit out to stdout.
+
+"""
+import sys
+import xml.dom.minidom as minidom
+
+__version__ = "0.1.0"
+__author__ = "Bertrand Janin <tamentis@neopulsar.org>"
+__license__ = "ISC"
+
+if "-h" in sys.argv:
+    print("usage: %s original.nzb > output.nzb" % sys.argv[0])
+    print("       %s < original.nzb > output.nzb" % sys.argv[0])
+    print("       cat original.nzb | %s > output.nzb" % sys.argv[0])
+    sys.exit(-1)
+
+# Load the XML string from stdin or file
+if len(sys.argv) > 1:
+    try:
+        fp = open(sys.argv[1])
+        xml_string = fp.read()
+    except:
+        print("Unable to read '%s'." % sys.argv[1])
+        sys.exit(-1)
+    finally:
+        fp.close()
+else:
+    try:
+        xml_string = sys.stdin.read()
+    except:
+        print("Unable to read on stdin.")
+        sys.exit(-1)
+
+# Parse the NZB with minidom
+try:
+    dom = minidom.parseString(xml_string)
+except:
+    print("Unable to read XML from this source.")
+    sys.exit(-1)
+
+# Get a sorted list of XML elements to push back in the NZB.
+nzb = dom.getElementsByTagName("nzb")[0]
+files = dom.getElementsByTagName("file")
+
+sorted_files = sorted(files, key=lambda f: f.getAttribute("subject"))
+
+# Push the elements one by on at the end, putting them in order.
+while sorted_files:
+    nzb.insertBefore(sorted_files.pop(0), None)
+
+sys.stdout.write(dom.toxml(encoding=dom.encoding))
+
