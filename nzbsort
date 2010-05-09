@@ -12,9 +12,9 @@ __author__ = "Bertrand Janin <tamentis@neopulsar.org>"
 __license__ = "ISC"
 
 if "-h" in sys.argv:
-    print("usage: %s original.nzb > output.nzb" % sys.argv[0])
-    print("       %s < original.nzb > output.nzb" % sys.argv[0])
-    print("       cat original.nzb | %s > output.nzb" % sys.argv[0])
+    print("usage: nzbsort original.nzb > output.nzb")
+    print("       nzbsort < original.nzb > output.nzb")
+    print("       cat original.nzb | nzbsort > output.nzb")
     sys.exit(-1)
 
 # Load the XML string from stdin or file
@@ -47,9 +47,26 @@ files = dom.getElementsByTagName("file")
 
 sorted_files = sorted(files, key=lambda f: f.getAttribute("subject"))
 
+# If we have one rar file in the mix, keep it for later so we can
+# push it at the top, if we have more than one, do nothing.
+rar_file = None
+for f in sorted_files:
+    if ".rar" in f.getAttribute("subject"):
+        if rar_file is not None:
+            rar_file = None
+            break
+        rar_file = f
+
 # Push the elements one by on at the end, putting them in order.
+first_file = None
 while sorted_files:
-    nzb.insertBefore(sorted_files.pop(0), None)
+    f = sorted_files.pop(0)
+    if first_file is None:
+        first_file = f
+    nzb.insertBefore(f, None)
+
+if rar_file is not None:
+    nzb.insertBefore(rar_file, first_file)
 
 sys.stdout.write(dom.toxml(encoding=dom.encoding))
 
