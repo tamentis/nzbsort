@@ -7,7 +7,7 @@ If no file is provided, read stdin. Either way, spit out to stdout.
 import sys
 import xml.dom.minidom as minidom
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Bertrand Janin <tamentis@neopulsar.org>"
 __license__ = "ISC"
 
