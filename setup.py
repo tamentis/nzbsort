@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name="nzbsort",
-    version="0.1.0",
+    version="0.1.1",
     description="NZB files alpha sorter",
     author="Bertrand Janin",
     author_email="tamentis@neopulsar.org",
