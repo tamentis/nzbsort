@@ -2,9 +2,11 @@
 
 from distutils.core import setup
 
+from nzbsort import __version__
+
 setup(
     name="nzbsort",
-    version="0.1.1",
+    version=__version__,
     description="NZB files alpha sorter",
     author="Bertrand Janin",
     author_email="tamentis@neopulsar.org",
