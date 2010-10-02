@@ -7,7 +7,7 @@ If no file is provided, read stdin. Either way, spit out to stdout.
 import sys
 import xml.dom.minidom as minidom
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 __author__ = "Bertrand Janin <tamentis@neopulsar.org>"
 __license__ = "ISC"
 
@@ -45,7 +45,15 @@ except:
 nzb = dom.getElementsByTagName("nzb")[0]
 files = dom.getElementsByTagName("file")
 
-sorted_files = sorted(files, key=lambda f: f.getAttribute("subject"))
+def get_filename(f):
+    subject = f.getAttribute("subject")
+    if '"' in subject:
+        tokens = subject.split('"')
+        if len(tokens) == 3:
+            subject = tokens[1]
+    return subject
+
+sorted_files = sorted(files, key=get_filename)
 
 # If we have one rar file in the mix, keep it for later so we can
 # push it at the top, if we have more than one, do nothing.
