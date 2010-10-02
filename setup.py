@@ -11,7 +11,7 @@ setup(
     author="Bertrand Janin",
     author_email="tamentis@neopulsar.org",
     url="http://tamentis.com/projects/nzbsort/",
-    scripts=["nzbsort"],
+    scripts=["nzbsort.py"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
